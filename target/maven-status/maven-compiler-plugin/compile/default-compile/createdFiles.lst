@@ -2,5 +2,4 @@ com/cjy/JFrame/BaseFrame.class
 com/cjy/util/WindowUtil.class
 com/cjy/Server/RegistServer.class
 com/cjy/JFrame/RegistFrame.class
-com/cjy/Handler/RegisterHandler.class
 com/cjy/JFrame/LoginFrame.class

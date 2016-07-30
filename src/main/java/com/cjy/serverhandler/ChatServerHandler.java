@@ -31,7 +31,6 @@ public class ChatServerHandler extends SimpleChannelInboundHandler {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        super.channelActive(ctx);
         if(channelList == null) {
             channelList = new LinkedList<Channel>();
         }
@@ -45,7 +44,6 @@ public class ChatServerHandler extends SimpleChannelInboundHandler {
             ByteBuf content = httpContent.content();
             Object obj = ObjectUtil.toObject(content.array());
             pushToClient(obj);
-            channelHandlerContext.flush();
         }
     }
 
@@ -61,6 +59,7 @@ public class ChatServerHandler extends SimpleChannelInboundHandler {
                         response.headers().set(CONTENT_LENGTH,response.content().readableBytes());
                         response.headers().set(CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
                         chn.write(response);
+                        chn.flush();
                     }
                 }
             }

@@ -21,21 +21,21 @@ public class ChatClient {
 
     private String host;
     private Integer port;
-    private ChatFrame object;
+    private final ChatFrame object;
+    private ChannelFuture f;
+    private EventLoopGroup workerGroup;
+    private Bootstrap b;
 
-    public ChatClient(String host,Integer port,ChatFrame object) {
+    public ChatClient(String host,Integer port,final ChatFrame object) {
         this.host = host;
         this.port = port;
         this.object = object;
-    }
-
-    public void setMessage(final Object obj) throws Exception {
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        workerGroup = new NioEventLoopGroup();
         try {
-            Bootstrap b = new Bootstrap();
+            b = new Bootstrap();
             b.group(workerGroup);
             b.channel(NioSocketChannel.class);
-            b.option(ChannelOption.SO_KEEPALIVE,true);
+            b.option(ChannelOption.SO_KEEPALIVE, true);
             b.handler(new ChannelInitializer() {
 
                 @Override
@@ -46,10 +46,18 @@ public class ChatClient {
                 }
             });
 
-            ChannelFuture f = b.connect(host,port).sync();
+            f = b.connect(host,port).sync();
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setMessage(final Object msg) throws Exception {
+
             URI uri = new URI("http://"+host+":"+port);
             DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST,
-                    uri.toASCIIString(), Unpooled.wrappedBuffer(ObjectUtil.toByteArray(obj)));
+                    uri.toASCIIString(), Unpooled.wrappedBuffer(ObjectUtil.toByteArray(msg)));
 
             //构建http请求
             request.headers().set(HttpHeaders.Names.HOST,host);
@@ -60,8 +68,6 @@ public class ChatClient {
             f.channel().write(request);
             f.channel().flush();
             f.channel().closeFuture().sync();
-        } finally {
-            workerGroup.shutdownGracefully();
-        }
+
     }
 }

@@ -1,8 +1,6 @@
 package com.cjy.Server;
 
 import com.cjy.serverhandler.LoginHandler;
-import com.cjy.serverhandler.RegisterHandler;
-import com.cjy.serverhandler.UsernameIsExistServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

@@ -27,6 +27,8 @@ public class ChatFrame extends BaseFrame {
 
     private java.util.List<Message> messages = new LinkedList<Message>();
 
+    ChatClient chatClient = new ChatClient("localhost",9003,ChatFrame.this);
+
 
 
     @Override
@@ -81,27 +83,26 @@ public class ChatFrame extends BaseFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String content = inputTextArea.getText();
-                if("".equals(content)) {
-                    Alert(ChatFrame.this,"请输入要发送的内容");
-                    return ;
+                if ("".equals(content)) {
+                    Alert(ChatFrame.this, "请输入要发送的内容");
+                    return;
                 }
 
                 final Message message = new Message();
                 message.setUsername(username);
                 message.setContent(content);
-
-                final ChatClient chatClient = new ChatClient("localhost",9003,ChatFrame.this);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             chatClient.setMessage(message);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
                         }
-
                     }
                 }).start();
+
+
 
             }
         });
@@ -127,7 +128,7 @@ public class ChatFrame extends BaseFrame {
         for(Message message : messages) {
             sb.append(message.getUsername());
             sb.append("\r\n");
-            sb.append("\t\t");
+            sb.append("\t");
             sb.append(message.getContent());
             sb.append("\r\n");
         }
